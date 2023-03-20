@@ -1,8 +1,8 @@
 package DTO
 
 type User struct {
-	id       int64
-	username string
+	Id       int64  `json:"id"`
+	Username string `json:"username"`
 }
 
 func NewUser() *User {
