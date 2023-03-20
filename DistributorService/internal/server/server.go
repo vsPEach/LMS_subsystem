@@ -1,6 +1,9 @@
 package server
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 type Server struct {
 	Port    string
@@ -10,7 +13,7 @@ type Server struct {
 func (S *Server) Start() {
 	err := http.ListenAndServe(S.Address+":"+S.Port, nil)
 	if err != nil {
-		return
+		log.Fatalf("Can't start server. Error: %s ", err)
 	}
 }
 

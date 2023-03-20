@@ -1,8 +1,14 @@
 package main
 
-import "github.com/vsPEach/LMS_subsystem/DistributorService/internal/server"
+import (
+	"fmt"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server"
+)
 
 func main() {
-	serv := server.NewServer("localhost", "8080")
+	cfg := config.NewConfig()
+	fmt.Println(cfg)
+	serv := server.NewServer(cfg.Address, cfg.Port)
 	serv.Start()
 }
