@@ -1,25 +1,20 @@
 package config
 
-import "flag"
+import (
+	"time"
+)
 
 var (
 	address, port string
 )
 
-func flagSetup() {
-	flag.StringVar(&address, "address", "localhost", "Service address")
-	flag.StringVar(&port, "port", "8080", "Service port")
-}
-
 type Config struct {
-	Address string
-	Port    string
+	Address   string
+	Port      string
+	Endpoints []string
+	Timeout   time.Duration
 }
 
 func NewConfig() *Config {
-	flag.Parse()
-	return &Config{
-		Address: address,
-		Port:    port,
-	}
+	return &Config{}
 }

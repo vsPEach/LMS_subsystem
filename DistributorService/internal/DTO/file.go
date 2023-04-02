@@ -1,15 +1,9 @@
 package DTO
 
 type File struct {
-	User      *User  `json:"user"`
-	Extension string `json:"extension"`
-	data      []byte `json:"data"`
+	User string `json:"username"`
+	Lang string `json:"lang"`
+	Data []byte `json:"data"`
 }
 
-func NewFile() *File {
-	return &File{
-		User:      NewUser(),
-		Extension: "py",
-		data:      nil,
-	}
-}
+type Files []File
