@@ -8,5 +8,7 @@ WORKDIR /app
 
 RUN go build -o main cmd/main.go
 
+EXPOSE 5005
+
 CMD [ "/app/main" ]
 

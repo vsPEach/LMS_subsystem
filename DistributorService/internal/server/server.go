@@ -1,7 +1,5 @@
 package server
 
-//TODO: create config
-
 import (
 	"context"
 	"github.com/gin-gonic/gin"
