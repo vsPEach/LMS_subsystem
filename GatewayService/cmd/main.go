@@ -16,6 +16,7 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
 	cfg, err := config.NewConfig("")
 	if err != nil {
 		log.Fatal(err)
