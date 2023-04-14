@@ -2,31 +2,36 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
+	"github.com/pkg/errors"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
+	"go.uber.org/zap"
 	"net/http"
 )
 
 type Server struct {
+	config  config.ServerConf
+	logg    zap.SugaredLogger
 	server  *http.Server
-	port    string
 	handler *gin.Engine
 }
 
-func NewServer(port string, handler *Handler) *Server {
-	return &Server{port: port,
+func NewServer(conf config.ServerConf, handler *Handler) *Server {
+	return &Server{config: conf,
 		handler: handler.InitRoutes()}
 }
 
-func (S *Server) Start() {
+func (S *Server) Start() error {
 	S.server = &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    fmt.Sprintf("%s:%s", S.config.Host, S.config.Port),
 		Handler: S.handler,
 	}
 	err := S.server.ListenAndServe()
 	if err != nil {
-		log.Fatalf("Can't start server. Error: %s ", err)
+		return errors.New("Can't start server. Error: %s " + err.Error())
 	}
+	return nil
 }
 
 func (S *Server) Stop(ctx context.Context) error {

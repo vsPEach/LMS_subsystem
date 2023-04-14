@@ -2,12 +2,14 @@ package main
 
 import (
 	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
-	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/app "
+	"log"
 )
 
 func main() {
-	cfg := config.NewConfig("")
-	handler := new(server.Handler)
-	serv := server.NewServer(cfg.Port, handler)
-	serv.Start()
+	cfg, err := config.NewConfig("")
+	if err != nil {
+		log.Fatal(err)
+	}
+	app.Run(cfg)
 }
