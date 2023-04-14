@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	cfg := config.NewConfig()
+	cfg := config.NewConfig("")
 	handler := new(server.Handler)
 	serv := server.NewServer(cfg.Port, handler)
 	serv.Start()
