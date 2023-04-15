@@ -1,1 +1,4 @@
 .idea
+GatewayService/main 
+GatewayService/*.log
+
