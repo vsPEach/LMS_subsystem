@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/DTO"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server/requests"
@@ -28,7 +29,7 @@ func (*Handler) Redirect(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(500, err)
 	}
-	go distribute(item.ToStringSlice())
+	fmt.Println(item)
 }
 
 func distribute(body []string) {

@@ -25,13 +25,12 @@ type (
 	}
 
 	DatabaseConf struct {
-		Username       string `mapstructure:"username" default:"postgres"`
-		Password       string `mapstructure:"password" default:"postgres"`
-		Host           string `mapstructure:"host" default:"localhost"`
-		Port           string `mapstructure:"port" default:"5432"`
-		Name           string `mapstructure:"name" default:"postgres"`
-		sslMode        string `mapstructure:"ssl_mode" default:"disable"`
-		Implementation string `mapstructure:"implementation" default:"sql"`
+		Username string `mapstructure:"username" default:"postgres"`
+		Password string `mapstructure:"password" default:"postgres"`
+		Host     string `mapstructure:"host" default:"localhost"`
+		Port     string `mapstructure:"port" default:"5432"`
+		Name     string `mapstructure:"name" default:"postgres"`
+		sslMode  string `mapstructure:"ssl_mode" default:"disable"`
 	}
 )
 
@@ -46,8 +45,6 @@ func NewConfig(path string) (Config, error) {
 	}
 	return config, nil
 }
-
-//TODO: ssl mode update
 
 func (db DatabaseConf) GetConnectionString() string {
 	return fmt.Sprintf(

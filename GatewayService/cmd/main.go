@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
-	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/app "
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/app"
 	"log"
 )
 
@@ -17,7 +17,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	cfg, err := config.NewConfig("")
+	cfg, err := config.NewConfig(path)
 	if err != nil {
 		log.Fatal(err)
 	}

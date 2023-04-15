@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/vsPEach/hw12_13_14_15_calendar/config"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
 	"go.uber.org/zap"
 )
 
