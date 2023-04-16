@@ -8,9 +8,10 @@ import (
 
 type (
 	Config struct {
-		Logger   LoggerConf   `mapstructure:"logger"`
-		Server   ServerConf   `mapstructure:"server"`
-		Database DatabaseConf `mapstructure:"database"`
+		Logger    LoggerConf    `mapstructure:"logger"`
+		Server    ServerConf    `mapstructure:"server"`
+		Database  DatabaseConf  `mapstructure:"database"`
+		Endpoints EndpointsConf `mapstructure:"urls"`
 	}
 
 	LoggerConf struct {
@@ -22,6 +23,11 @@ type (
 	ServerConf struct {
 		Host string `mapstructure:"host"`
 		Port string `mapstructure:"port"`
+	}
+
+	EndpointsConf struct {
+		py string `mapstructure:"py" default:""`
+		js string `mapstructure:"js" default:""`
 	}
 
 	DatabaseConf struct {

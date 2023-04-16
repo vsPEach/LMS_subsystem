@@ -15,3 +15,7 @@ database:
   host: "localhost"
   port: 5432
   ssl_mode: "disable"
+# place here endpoints
+urls:
+  py: "https://eoalsyff94oteab.m.pipedream.net/"
+  js: "https://eoalsyff94oteab.m.pipedream.net/"
