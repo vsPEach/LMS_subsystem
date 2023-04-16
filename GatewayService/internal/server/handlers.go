@@ -1,17 +1,20 @@
 package server
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/DTO"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server/requests"
+	"go.uber.org/zap"
 	"io"
-	"strings"
+	"net/http"
 )
 
-type Handler struct{}
+type Handler struct {
+	logg *zap.SugaredLogger
+	conf config.EndpointsConf
+}
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	routes := gin.New()
@@ -19,34 +22,49 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	return routes
 }
 
-func (*Handler) Redirect(ctx *gin.Context) {
+func (h *Handler) Redirect(ctx *gin.Context) {
 	var item DTO.Item
 	data, err := io.ReadAll(ctx.Request.Body)
 	if err != nil {
-		ctx.JSON(500, err)
+		h.logg.Error(err)
+		ctx.JSON(http.StatusInternalServerError, err)
 	}
 	err = json.Unmarshal(data, &item)
 	if err != nil {
-		ctx.JSON(500, err)
+		h.logg.Error(err)
+		ctx.JSON(http.StatusInternalServerError, err)
 	}
-	fmt.Println(item)
+	h.distribute(item.Files)
 }
 
-func distribute(body []string) {
-	python := bytes.Buffer{}
-	js := bytes.Buffer{}
-	for _, s := range body {
-		for _, lang := range strings.Split(s, ",") {
-			switch strings.Split(lang, ":")[1] {
-			case "py":
-				python.Write([]byte(s + "\n"))
-			case "js":
-				js.Write([]byte(s))
-			}
+func NewHandler(logger *zap.SugaredLogger, conf config.EndpointsConf) *Handler {
+	return &Handler{
+		logg: logger,
+		conf: conf,
+	}
+}
+
+func (h *Handler) distribute(files []DTO.File) {
+	python, js := make([]DTO.File, 0, 10), make([]DTO.File, 0, 10)
+	for _, file := range files {
+		switch file.Lang {
+		case "py":
+			python = append(python, file)
+		case "js":
+			js = append(js, file)
 		}
 	}
-	err := requests.Request(python.Bytes(), "https://eoyg9isams0wupi.m.pipedream.net")
+	go h.sender(python, "https://eoalsyff94oteab.m.pipedream.net/")
+	go h.sender(js, "https://eoalsyff94oteab.m.pipedream.net/")
+}
+
+func (h *Handler) sender(files []DTO.File, url string) {
+	bytes, err := json.Marshal(files)
 	if err != nil {
-		return
+		h.logg.Error(err)
+	}
+	err = requests.Request(bytes, url)
+	if err != nil {
+		h.logg.Error()
 	}
 }

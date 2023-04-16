@@ -27,8 +27,7 @@ func (S *Server) Start() error {
 		Addr:    fmt.Sprintf("%s:%s", S.config.Host, S.config.Port),
 		Handler: S.handler,
 	}
-	err := S.server.ListenAndServe()
-	if err != nil {
+	if err := S.server.ListenAndServe(); err != nil {
 		return errors.New("Can't start server. Error: %s " + err.Error())
 	}
 	return nil
