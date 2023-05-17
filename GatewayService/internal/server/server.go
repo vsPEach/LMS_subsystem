@@ -1,38 +1,32 @@
 package server
 
 import (
-	"context"
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
-	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
-	"go.uber.org/zap"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/repository"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server/handlers"
 	"net/http"
 )
 
+type Logger interface {
+	Error(...any)
+	Info(...any)
+	Warn(...any)
+	Infof(template string, args ...any)
+	Errorf(template string, args ...any)
+}
+
 type Server struct {
-	config  config.ServerConf
-	logg    zap.SugaredLogger
-	server  *http.Server
-	handler *gin.Engine
+	server http.Server
+	logg   Logger
 }
 
-func NewServer(conf config.ServerConf, handler *Handler) *Server {
-	return &Server{config: conf,
-		handler: handler.InitRoutes()}
+func NewServer(database *repository.Database, logger Logger) *Server {
+	h := handlers.NewHTTPHandler(database, logger)
+	return &Server{server: http.Server{
+		Addr:    ":8090",
+		Handler: h.Routes(),
+	}}
 }
 
-func (S *Server) Start() error {
-	S.server = &http.Server{
-		Addr:    fmt.Sprintf("%s:%s", S.config.Host, S.config.Port),
-		Handler: S.handler,
-	}
-	if err := S.server.ListenAndServe(); err != nil {
-		return errors.New("Can't start server. Error: %s " + err.Error())
-	}
-	return nil
-}
-
-func (S *Server) Stop(ctx context.Context) error {
-	return S.server.Shutdown(ctx)
+func (s *Server) Run() error {
+	return s.server.ListenAndServe()
 }

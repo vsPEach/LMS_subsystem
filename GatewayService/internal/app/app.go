@@ -1,26 +1,46 @@
 package app
 
 import (
-	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/config"
-	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/DTO"
-	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/repository"
+	HTTP "github.com/vsPEach/LMS_subsystem/DistributorService/internal/server"
 	logger "github.com/vsPEach/LMS_subsystem/DistributorService/pkg"
+	"net/http"
+	"sync"
 )
 
-type repo interface {
-	Create(file DTO.File) error
-	Read(uuid uuid.UUID) error
-	ReadAll(uuid uuid.UUID) error
-	Update(uuid uuid.UUID) error
-	Delete(uuid2 uuid.UUID) error
+type Logger interface {
+	Error(...any)
+	Info(...any)
+	Warn(...any)
+	Infof(template string, args ...any)
+	Errorf(template string, args ...any)
 }
 
 func Run(conf config.Config) {
 	logg := logger.New(conf.Logger)
-	serv := server.NewServer(conf.Server, server.NewHandler(logg, conf.Endpoints))
-	if err := serv.Start(); err != nil {
-		logg.Error("Can't start server")
-	}
-	logg.Info("Server start...")
+	db := repository.NewDatabase()
+	server := HTTP.NewServer(db, logg)
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		if err := server.Run(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logg.Error(err)
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if err := db.Connect(); err != nil {
+			logg.Error(err)
+		}
+		logg.Info("connected to database")
+	}()
+
+	logg.Info("service start")
+	wg.Wait()
 }

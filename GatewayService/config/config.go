@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -41,15 +40,7 @@ type (
 )
 
 func NewConfig(path string) (Config, error) {
-	viper.SetConfigFile(path)
-	var config Config
-	if err := viper.ReadInConfig(); err != nil {
-		return config, err
-	}
-	if err := viper.Unmarshal(&config); err != nil {
-		return config, err
-	}
-	return config, nil
+	return Config{}, nil
 }
 
 func (db DatabaseConf) GetConnectionString() string {

@@ -1,11 +1,28 @@
+BIN := "./bin/app"
+COMPOSE_PATH := "deployments/docker-compose.yml"
 
-TAG := "gateway:0.0.1"
-
-build-img:
-	docker build -t $(TAG) -f Dockerfile .
-run-img: build-img
-	docker run --name app -p 5005:5005 $(TAG)
 build:
-	go build cmd/main.go
+	go build -v -o $(BIN) ./cmd/...
+
 run: build
-	./main
+	$(BIN)
+
+version: build
+	$(BIN) version
+
+test:
+	go test -race ./internal/... ./pkg/...
+
+install-lint-deps:
+	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.41.1
+
+lint: install-lint-deps
+	golangci-lint run ./...
+
+up:
+	docker compose -f $(COMPOSE_PATH) up -d --build --force-recreate
+
+down:
+	docker compose -f $(COMPOSE_PATH) down
+
+.PHONY: build run build-img version test lint up down
