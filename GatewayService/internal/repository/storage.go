@@ -14,7 +14,7 @@ type Database struct {
 }
 
 func NewDatabase() *Database {
-	return &Database{dsn: "host=localhost port=5432 user=postgres password=postgres dbname=auth sslmode=disable"}
+	return &Database{dsn: "host=dpg-chj1tfe4dad01ail2gg0-a port=5432 user=peach password=UbX3AZ0BXVIxM4KdAdxQ88EZCudgdyuN dbname=auth_es9b sslmode=disable"}
 }
 
 func (db *Database) Create(user models.User) (err error) {
@@ -27,7 +27,7 @@ func (db *Database) Create(user models.User) (err error) {
 	return res.Error
 }
 
-func (db *Database) Read(password string) error {
+func (db *Database) Read(email, password string) error {
 	var user models.User
 	res := db.connection.First(&user)
 	if res.Error != nil {

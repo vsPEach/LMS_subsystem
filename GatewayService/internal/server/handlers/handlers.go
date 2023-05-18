@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/models"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/repository"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server/middlewares"
+	"github.com/vsPEach/LMS_subsystem/DistributorService/internal/server/request"
 	"github.com/vsPEach/LMS_subsystem/DistributorService/pkg/utils"
 	"log"
 	"net/http"
@@ -34,8 +36,8 @@ func (h *HTTPHandler) Routes() *gin.Engine {
 	api.POST("/signin", h.Login)
 	api.POST("/signup", h.Register)
 	secured := h.engine.Group("/api").Use(middlewares.Auth())
-	secured.GET("/ex1", h.Redirect)
-	secured.GET("/ex2", h.Redirect)
+	secured.POST("/py", h.RedirectToPy)
+	secured.POST("/js", h.RedirectToJs)
 	log.Print(h.engine.Routes())
 	return h.engine
 }
@@ -80,6 +82,34 @@ func (h *HTTPHandler) Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
-func (h *HTTPHandler) Redirect(ctx *gin.Context) {
+func (h *HTTPHandler) RedirectToPy(ctx *gin.Context) {
+	var item models.Item
+	if err := ctx.ShouldBindJSON(&item); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+	bytes, err := json.Marshal(item)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+	request.NewRequest(bytes, "")
+}
 
+func (h *HTTPHandler) RedirectToJs(ctx *gin.Context) {
+	var item models.Item
+	if err := ctx.ShouldBindJSON(&item); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+	bytes, err := json.Marshal(item)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+	request.NewRequest(bytes, "")
 }
