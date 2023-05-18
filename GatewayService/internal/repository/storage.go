@@ -14,7 +14,7 @@ type Database struct {
 }
 
 func NewDatabase() *Database {
-	return &Database{dsn: "host=dpg-chj1tfe4dad01ail2gg0-a port=5432 user=peach password=UbX3AZ0BXVIxM4KdAdxQ88EZCudgdyuN dbname=auth_es9b sslmode=disable"}
+	return &Database{dsn: "postgres://peach:UbX3AZ0BXVIxM4KdAdxQ88EZCudgdyuN@dpg-chj1tfe4dad01ail2gg0-a.oregon-postgres.render.com/auth_es9b"}
 }
 
 func (db *Database) Create(user models.User) (err error) {
