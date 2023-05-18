@@ -27,7 +27,7 @@ func (db *Database) Create(user models.User) (err error) {
 	return res.Error
 }
 
-func (db *Database) Read(email, password string) error {
+func (db *Database) Read(password string) error {
 	var user models.User
 	res := db.connection.First(&user)
 	if res.Error != nil {
