@@ -22,7 +22,7 @@ type Server struct {
 func NewServer(database *repository.Database, logger Logger) *Server {
 	h := handlers.NewHTTPHandler(database, logger)
 	return &Server{server: http.Server{
-		Addr:    ":8090",
+		Addr:    "https://gateway-service-bx88.onrender.com:80",
 		Handler: h.Routes(),
 	}}
 }
